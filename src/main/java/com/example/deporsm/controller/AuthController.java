@@ -18,17 +18,17 @@ public class AuthController {
     @Autowired
     private UsuarioRepository usuarioRepo;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        System.out.println("Intentando login con: " + request.getCorreo());
+    //@PostMapping("/login")
+    //public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    //System.out.println("Intentando login con: " + request.getCorreo());
 
-        Usuario user = usuarioRepo.findByCorreo(request.getCorreo());
+    //Usuario user = usuarioRepo.findByCorreo(request.getCorreo());
 
-        if (user == null || !user.getPasswordHash().equals(request.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
-        }
+    //if (user == null || !user.getPasswordHash().equals(request.getPassword())) {
+    // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
+    //}
 
-        return ResponseEntity.ok(user);
-    }
+    // return ResponseEntity.ok(user);
+//    }
 
 }

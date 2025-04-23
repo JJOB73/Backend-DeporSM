@@ -17,8 +17,8 @@ public class ReservaController {
     @Autowired
     private ReservaRepository reservaRepository;
 
-    @GetMapping("/usuario/{dni}")
-    public List<Reserva> obtenerReservasPorUsuario(@PathVariable String dni) {
-        return reservaRepository.findByDniUsuario(dni);
-    }
+   // @GetMapping("/usuario/{dni}")
+   // public List<Reserva> obtenerReservasPorUsuario(@PathVariable String dni) {
+       // return reservaRepository.findByDniUsuario(dni);
+   // }
 }

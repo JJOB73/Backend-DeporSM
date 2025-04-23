@@ -1,12 +1,16 @@
 package com.example.deporsm.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "Reservas")
+@Getter
+@Setter
+@Table(name = "reservas")
 public class Reserva {
 
     @Id
@@ -14,11 +18,13 @@ public class Reserva {
     @Column(name = "idReserva")
     private Integer idReserva;
 
-    @Column(name = "dniUsuario")
-    private String dniUsuario;
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
 
-    @Column(name = "id_instalacion")
-    private Integer idInstalacion;
+    @ManyToOne
+    @JoinColumn(name = "id_instalacion", nullable = false)
+    private InstalacionDeportiva instalacion;
 
     private LocalDate fecha;
 
@@ -38,7 +44,6 @@ public class Reserva {
     @Column(name = "nota_reserva")
     private String notaReserva;
 
-    // ✅ Enums embebidos (pueden ir fuera también)
     public enum Estado {
         pendiente, confirmada, cancelada
     }
@@ -46,6 +51,4 @@ public class Reserva {
     public enum PagoState {
         pendiente, validado, rechazado
     }
-
-    // Getters y Setters...
 }

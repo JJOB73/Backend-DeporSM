@@ -1,12 +1,22 @@
 package com.example.deporsm.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
 
 @Entity
-@Table(name = "Usuarios")
+@Getter
+@Setter
+@Table(name = "usuarios")
 public class Usuario {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(unique = true)
     private String dni;
 
     private String nombres;
@@ -16,93 +26,12 @@ public class Usuario {
     private String direccion;
     private String passwordHash;
     private String fotoPerfil;
-
-    @Enumerated(EnumType.STRING)
-    private Rol rol;
-
     private String linkWsp;
 
-    public enum Rol {
-        vecino, coordinador, admin, superadmin
-    }
+    @ManyToOne
+    @JoinColumn(name = "rol_id")
+    private Rol rol;
 
-    public String getDni() {
-        return dni;
-    }
-
-    public void setDni(String dni) {
-        this.dni = dni;
-    }
-
-    public String getNombres() {
-        return nombres;
-    }
-
-    public void setNombres(String nombres) {
-        this.nombres = nombres;
-    }
-
-    public String getApellidos() {
-        return apellidos;
-    }
-
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public String getFotoPerfil() {
-        return fotoPerfil;
-    }
-
-    public void setFotoPerfil(String fotoPerfil) {
-        this.fotoPerfil = fotoPerfil;
-    }
-
-    public Rol getRol() {
-        return rol;
-    }
-
-    public void setRol(Rol rol) {
-        this.rol = rol;
-    }
-
-    public String getLinkWsp() {
-        return linkWsp;
-    }
-
-    public void setLinkWsp(String linkWsp) {
-        this.linkWsp = linkWsp;
-    }
+    @OneToMany(mappedBy = "usuario")
+    private List<Reserva> reservas;
 }

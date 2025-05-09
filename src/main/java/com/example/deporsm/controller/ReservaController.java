@@ -44,10 +44,6 @@ public class ReservaController {
         return reservaRepository.getDashboardStats();
     }
 
-    @GetMapping("/recientes")
-    public List<ReservaRecienteDTO> obtenerReservasRecientes() {
-        return reservaRepository.obtenerReservasRecientes();
-    }
 
 
 

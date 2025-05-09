@@ -42,23 +42,6 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
     """, nativeQuery = true)
     DashboardStatsDTO getDashboardStats();// ← preferido si estás usando una proyección basada en constructor
 
-    @Query(value = """
-    SELECT 
-        r.id AS idReserva,
-        u.nombre AS nombreUsuario,
-        i.nombre AS nombreInstalacion,
-        r.fecha AS fecha,
-        r.hora_inicio AS horaInicio,
-        r.hora_fin AS horaFin,
-        r.estado AS estado,
-        r.estado_pago AS estadoPago
-    FROM reservas r
-    JOIN usuarios u ON r.usuario_id = u.id
-    JOIN instalaciones i ON r.instalacion_id = i.id
-    ORDER BY r.fecha DESC, r.hora_inicio DESC
-    LIMIT 5
-    """, nativeQuery = true)
-    List<ReservaRecienteDTO> obtenerReservasRecientes();
 
 
 

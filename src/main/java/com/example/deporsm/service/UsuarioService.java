@@ -1,14 +1,18 @@
 package com.example.deporsm.service;
 
 import com.example.deporsm.dto.ActualizarPerfilDTO;
+import com.example.deporsm.dto.AdministradorDTO;
 import com.example.deporsm.dto.CambioPasswordDTO;
 import com.example.deporsm.dto.CoordinadorDTO;
 import com.example.deporsm.dto.PerfilUsuarioDTO;
 import com.example.deporsm.dto.PreferenciasNotificacionDTO;
+import com.example.deporsm.dto.VecinoDTO;
 import com.example.deporsm.model.PreferenciaNotificacion;
+import com.example.deporsm.model.Rol;
 import com.example.deporsm.model.Usuario;
 import com.example.deporsm.repository.PreferenciaNotificacionRepository;
 import com.example.deporsm.repository.UsuarioRepository;
+import com.example.deporsm.repository.VecinoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +35,9 @@ public class UsuarioService {
     
     @Autowired
     private PreferenciaNotificacionRepository preferenciaNotificacionRepository;
+
+    @Autowired
+    private VecinoRepository vecinoRepository;
 
     /**
      * Obtiene todos los usuarios del sistema
@@ -154,7 +161,8 @@ public class UsuarioService {
      * @param email Email del usuario
      * @param preferenciasDTO Preferencias de notificaciones
      * @throws RuntimeException si no se encuentra el usuario
-     */    public void actualizarPreferenciasNotificaciones(String email, PreferenciasNotificacionDTO preferenciasDTO) {
+     */    
+    public void actualizarPreferenciasNotificaciones(String email, PreferenciasNotificacionDTO preferenciasDTO) {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         
@@ -170,5 +178,92 @@ public class UsuarioService {
         preferencias.setMantenimiento(preferenciasDTO.isMantenimiento());
         
         preferenciaNotificacionRepository.save(preferencias);
+    }
+
+    /**
+     * Obtiene todos los vecinos con su información básica y número de reservas
+     */
+    public List<VecinoDTO> listarVecinos() {
+        return vecinoRepository.findAllVecinos();
+    }
+
+    /**
+     * Busca vecinos por nombre, email o DNI
+     */
+    public List<VecinoDTO> buscarVecinos(String query) {
+        return vecinoRepository.buscarVecinos(query);
+    }
+
+    /**
+     * Registra un nuevo vecino
+     * @throws RuntimeException si el email o DNI ya están registrados
+     */
+    public Usuario registrarVecino(Usuario usuario) {
+        // Validar correo duplicado
+        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
+            throw new RuntimeException("El correo electrónico ya está registrado");
+        }
+
+        // Encriptar contraseña
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+          // Asignar rol de vecino (role_id = 4)
+        Rol rol = new Rol();
+        rol.setId(4); // ID 4 corresponde al rol 'vecino' en la base de datos
+        usuario.setRol(rol);
+        
+        // Activar por defecto
+        usuario.setActivo(true);
+        
+        return usuarioRepository.save(usuario);
+    }
+
+    /**
+     * Actualiza los datos de un vecino
+     * @throws RuntimeException si el vecino no existe
+     */
+    public Usuario actualizarVecino(Long id, Usuario datosActualizados) {
+        Usuario vecino = usuarioRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Vecino no encontrado"));
+        
+        // Actualizar solo campos permitidos
+        vecino.setNombre(datosActualizados.getNombre());
+        vecino.setApellidos(datosActualizados.getApellidos());
+        vecino.setTelefono(datosActualizados.getTelefono());
+        vecino.setDireccion(datosActualizados.getDireccion());
+        
+        return usuarioRepository.save(vecino);
+    }
+
+    /**
+     * Desactiva un vecino
+     * @throws RuntimeException si el vecino no existe
+     */
+    public void desactivarVecino(Long id) {
+        Usuario vecino = usuarioRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Vecino no encontrado"));
+        
+        vecino.setActivo(false);
+        usuarioRepository.save(vecino);
+    }
+
+    /**
+     * Reactiva un vecino
+     * @throws RuntimeException si el vecino no existe
+     */
+    public void reactivarVecino(Long id) {
+        Usuario vecino = usuarioRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Vecino no encontrado"));
+        
+        vecino.setActivo(true);
+        usuarioRepository.save(vecino);
+    }
+
+    /**
+     * Obtiene todos los administradores
+     * @return Lista de administradores
+     */
+    public List<AdministradorDTO> listarAdministradores() {
+        System.out.println("[DEBUG] UsuarioService.listarAdministradores - Iniciando búsqueda");
+        return usuarioRepository.findAllAdministradores();
     }
 }

@@ -19,4 +19,7 @@ public class CrearReservaDTO {
     private Time horaFin;
     private Integer numeroAsistentes;
     private String comentarios;
+    private String estado;          // Estado de la reserva (pendiente, confirmada, etc)
+    private String estadoPago;      // Estado del pago (pendiente, pagado, etc)
+    private String metodoPago;      // Método de pago (online, deposito)
 }

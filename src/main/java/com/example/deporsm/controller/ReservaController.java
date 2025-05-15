@@ -12,21 +12,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/reservas")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ReservaController {
 
     @Autowired
     private ReservaRepository reservaRepository;
     
     @Autowired
-    private ReservaService reservaService;
-
-    @GetMapping("/usuario/{dni}")
+    private ReservaService reservaService;    @GetMapping("/usuario/{dni}")
     public List<ReservaListDTO> obtenerReservasPorUsuario(@PathVariable String dni) {
         List<Reserva> reservas = reservaRepository.findByUsuario_Dni(dni);
 
@@ -36,11 +36,14 @@ public class ReservaController {
                             reserva.getId(),
                             reserva.getUsuario().getNombre(),
                             reserva.getInstalacion().getNombre(),
+                            reserva.getInstalacion().getUbicacion(), // Incluir ubicación
+                            reserva.getMetodoPago(),                // Incluir método de pago
+                            reserva.getInstalacion().getImagenUrl(), // Incluir URL de imagen
                             reserva.getFecha(),
                             reserva.getHoraInicio(),
                             reserva.getHoraFin(),
                             reserva.getEstado(),
-                            reserva.getEstadoPago() // Asignar estadoPago
+                            reserva.getEstadoPago()
                     );
                     return dto;
                 })
@@ -94,8 +97,7 @@ public class ReservaController {
             return ResponseEntity.badRequest().body("Error al cancelar reserva: " + e.getMessage());
         }
     }
-    
-    /**
+      /**
      * Obtiene el historial de reservas del usuario autenticado
      */
     @GetMapping("/historial")
@@ -112,6 +114,26 @@ public class ReservaController {
             return ResponseEntity.ok(reservaService.obtenerHistorialReservas(email));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error al obtener historial: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Obtiene los detalles de una reserva específica por su ID
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerDetalleReserva(@PathVariable Integer id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        
+        if (authentication == null || !authentication.isAuthenticated() 
+            || authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(401).body("Usuario no autenticado");
+        }
+          try {
+            return reservaRepository.obtenerDetalleReserva(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al obtener detalle de reserva: " + e.getMessage());
         }
     }
 }

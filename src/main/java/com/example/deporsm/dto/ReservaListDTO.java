@@ -5,23 +5,26 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 
-public class ReservaListDTO {
-
-    private Integer id;
+public class ReservaListDTO {    private Integer id;
     private String usuarioNombre;
     private String instalacionNombre;
+    private String instalacionUbicacion;  // Añadido ubicación de la instalación
+    private String metodoPago;            // Añadido método de pago
+    private String instalacionImagenUrl;  // Añadido URL de la imagen de la instalación
     private Date fecha;
     private Time horaInicio;
     private Time horaFin;
     private String estado;
-    private String estadoPago;
-
-    // Constructor con parámetros para usarlo en la consulta
-    public ReservaListDTO(Integer id, String usuarioNombre, String instalacionNombre, Date fecha,
-                          Time horaInicio, Time horaFin, String estado, String estadoPago) {
+    private String estadoPago;    // Constructor con parámetros para usarlo en la consulta
+    public ReservaListDTO(Integer id, String usuarioNombre, String instalacionNombre, String instalacionUbicacion,
+                          String metodoPago, String instalacionImagenUrl, Date fecha, Time horaInicio, Time horaFin, 
+                          String estado, String estadoPago) {
         this.id = id;
         this.usuarioNombre = usuarioNombre;
         this.instalacionNombre = instalacionNombre;
+        this.instalacionUbicacion = instalacionUbicacion;
+        this.metodoPago = metodoPago;
+        this.instalacionImagenUrl = instalacionImagenUrl;
         this.fecha = fecha;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
@@ -88,10 +91,30 @@ public class ReservaListDTO {
 
     public String getEstadoPago() {
         return estadoPago;
+    }    public void setEstadoPago(String estadoPago) {
+        this.estadoPago = estadoPago;
     }
 
-    public void setEstadoPago(String estadoPago) {
-        this.estadoPago = estadoPago;
+    public String getInstalacionUbicacion() {
+        return instalacionUbicacion;
+    }
+
+    public void setInstalacionUbicacion(String instalacionUbicacion) {
+        this.instalacionUbicacion = instalacionUbicacion;
+    }    public String getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(String metodoPago) {
+        this.metodoPago = metodoPago;
+    }
+    
+    public String getInstalacionImagenUrl() {
+        return instalacionImagenUrl;
+    }
+
+    public void setInstalacionImagenUrl(String instalacionImagenUrl) {
+        this.instalacionImagenUrl = instalacionImagenUrl;
     }
 
     // Método para generar un rango de hora en formato "HH:mm - HH:mm"
